@@ -5,51 +5,68 @@ import glob
 import time
 import random
 
+print(len(sys.argv))
+
+# default parameters
+path = ""
+target_column = 0
 mylist = []
 
 
 def print_help():
-    print("to create root folder use command\n     $ python csvfind [working directory] --init\ndata,lists,and output "
+    print("to create root folder use command:\n     $ python csvfind [working directory] --init\ndata,lists,and output "
           "files will be created, \n ** if no directory was specified the current directory will be treated as root")
 
 
-def init():
+def init(pth):
     if not os.path.exists("output"):
         os.mkdir("output")
-        print("output file created in " + str(os.curdir))
+        if pth != "":
+            print("output file created in current directory")
+        else:
+            print("output file created in " + str(pth))
     else:
-        print("output file already exists")
+        print("output file already exists in " + str(pth))
     if not os.path.exists("data"):
         os.mkdir("data")
-        print("data file created in " + str(os.curdir))
+        if pth != "":
+            print("data file created in current directory")
+        else:
+            print("data file created in " + str(pth))
     else:
-        print("data file already exists")
+        print("data file already exists in " + str(pth))
     if not os.path.exists("lists"):
         os.mkdir("lists")
-        print("lists file created in " + str(os.curdir))
+        if pth != "":
+            print("lists file created in current directory")
+        else:
+            print("lists file created in " + str(pth))
     else:
-        print("lists file already exists")
+        print("lists file already exists in " + str(pth))
     exit()
 
-# default parameters
-path = os.curdir
-target_column = 0
 
 # command line options
 if len(sys.argv) < 2:
     print_help()
     exit()
 if "--init" in sys.argv and len(sys.argv) < 3:
-    init()
-elif "--init " in sys.argv and len(sys.argv) == 4:
+    init(path)
+elif "--init" in sys.argv and len(sys.argv) == 3:
+
+    path = sys.argv[2]
     try:
-        path = sys.argv[3]
+
+        os.chdir(path)
     except:
         print("Invalid command-line input, Check usage: ")
         print_help()
         exit()
-    init()
-
+    init(path)
+else:
+    print("Invalid command-line inputs")
+    print_help()
+    exit()
 # path = sys.argv[1]
 # target_column = sys.argv[2]
 # target_str = sys.argv[3]
@@ -57,16 +74,9 @@ mylist = []
 
 # set path
 os.chdir(path)
-isFolder = os.path.exists("output")
 # if main files are missing from root directory
-if not isFolder:
-    print("output file not found, use --init command to initialize main folders")
-    print_help()
-if not os.path.exists("data"):
-    print("data file not found, use --init command to initialize main folders")
-    print_help()
-if not os.path.exists("lists"):
-    print("lists file not found, use --init command to initialize main folders")
+if not os.path.exists("output") or not os.path.exists("data") or not os.path.exists("lists"):
+    print("main folders missing, use --init command to initialize main folders")
     print_help()
 
 # Note: instead of overwriting output, add a new numbered file.
